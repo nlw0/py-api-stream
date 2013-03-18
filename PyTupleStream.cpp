@@ -10,6 +10,7 @@ class TupleStream {
 public:
   
   friend TupleStream& operator>>(TupleStream &, long int &);
+  friend TupleStream& operator>>(TupleStream &, double &);
 
   class ArgsCountException: public std::exception {};
   class TypeErrorException: public std::exception {};
@@ -49,11 +50,35 @@ TupleStream& operator>>(TupleStream &input, long int &x) {
     // Fetch next PyObject from stream.
     PyObject *po = PyTuple_GetItem(input.args, input.count);
     
-    // type-check, then finally take the value from the PyObject, and
-    // then check again! (?)
+    // Type-check, then finally take the value from the PyObject, and
+    // then check again. First check is necessary to prevent automatic
+    // conversion from float to int.
     if (!PyInt_CheckExact(po)) throw TupleStream::TypeErrorException();
     x = PyInt_AsLong(po);    
     if ((x == -1) && PyErr_Occurred()) throw TupleStream::TypeErrorException();
+  }
+  catch (TupleStream::ArgsCountException) { input.set_fail_nargs(); }
+  catch (TupleStream::TypeErrorException) { input.set_fail_typeerror(); }
+  catch (TupleStream::FailStateException) { }
+  
+  input.count++;
+  return input;
+}
+
+// Read an integer from tuple stream.
+TupleStream& operator>>(TupleStream &input, double &x) {
+  try {
+    if (input.fail()) throw TupleStream::FailStateException();
+
+    if (input.count >= input.Nargs) throw TupleStream::ArgsCountException();
+
+    // Fetch next PyObject from stream.
+    PyObject *po = PyTuple_GetItem(input.args, input.count);
+    
+    // Take the value from the PyObject, and then check if
+    // reading/conversion was successful.
+    x = PyFloat_AsDouble(po);
+    if ((x == -1.0) && PyErr_Occurred()) throw TupleStream::TypeErrorException();
   }
   catch (TupleStream::ArgsCountException) { input.set_fail_nargs(); }
   catch (TupleStream::TypeErrorException) { input.set_fail_typeerror(); }

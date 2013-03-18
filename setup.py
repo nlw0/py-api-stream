@@ -12,7 +12,8 @@ os.environ['OPT'] = " ".join(
 ## ===
 
 module1 = Extension('tusttest',
-                    sources = ['tusttest_module.cpp'])
+                    sources = ['tusttest_module.cpp'],
+                    depends = ['PyTupleStream.cpp'])
 
 setup (name = 'TuStTest',
        version = '1.0',
