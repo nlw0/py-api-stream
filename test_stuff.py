@@ -1,4 +1,5 @@
 import tusttest
+import numpy
 
 def tfun1_proto(a,b):
     '''Python-prototype of test function 1.'''
@@ -7,6 +8,10 @@ def tfun1_proto(a,b):
 def tfun2_proto(a, b):
     '''Python-prototype of test function 2.'''
     return a * b
+
+def tfun3_proto(a, b):
+    '''Python-prototype of test function 2.'''
+    return a * (b[0,0] * b[1,1] - b[1,0] * b[0,1])
 
 
 if __name__ == '__main__':
@@ -112,3 +117,15 @@ if __name__ == '__main__':
         print "OK int -> float conversion."
     else:
         raise Exception('FAIL int -> float conversion.')
+
+    print 70*'-'
+    a = 3.0
+    b = numpy.array([[1.0, 2.0], [3.0, 4.0]])
+    print a
+    print b
+    z = tusttest.tfun3(a,b)
+    zr = tfun3_proto(a,b)
+    print z
+    print zr
+
+
