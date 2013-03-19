@@ -1,44 +1,32 @@
 #include <Python.h>
 #include <exception>
 
+#include "PyTupleStream.h"
 
-class TupleStream {
-  int count;
-  int Nargs;
-  PyObject *args;
-  bool failbit;
-public:
-  
-  friend TupleStream& operator>>(TupleStream &, long int &);
-  friend TupleStream& operator>>(TupleStream &, double &);
+TupleStream::TupleStream(PyObject *input_args) {
+  failbit = false;
+  args = input_args;
+  Nargs = PyTuple_Size(args);
+  count = 0;
+}
 
-  class ArgsCountException: public std::exception {};
-  class TypeErrorException: public std::exception {};
-  class FailStateException: public std::exception {};
+bool TupleStream::fail() {
+  return failbit;
+}
 
-  TupleStream(PyObject *input_args) {
-    failbit = false;
-    args = input_args;
-    Nargs = PyTuple_Size(args);
-    count = 0;
-  }
+void TupleStream::set_fail_nargs() {
+  PyErr_SetString(PyExc_TypeError, "Too few arguments provided.");
+  failbit = true;
+}
 
-  bool fail() {
-    return failbit;
-  }
+void TupleStream::set_fail_typeerror() {
+  char err_msg[1024];
+  snprintf(err_msg, 1024, "Incorrect type for parameter number %d.", count + 1);
+  PyErr_SetString(PyExc_TypeError, err_msg);
+  failbit = true;
+}
 
-  void set_fail_nargs() {
-    PyErr_SetString(PyExc_TypeError, "Too few arguments provided.");
-    failbit = true;
-  }
-
-  void set_fail_typeerror() {
-    char err_msg[1024];
-    snprintf(err_msg, 1024, "Incorrect type for parameter number %d.", count + 1);
-    PyErr_SetString(PyExc_TypeError, err_msg);
-    failbit = true;
-  }
-};
+bool TupleStream::eof() { return count >= Nargs; }
 
 // Read an integer from tuple stream.
 TupleStream& operator>>(TupleStream &input, long int &x) {
@@ -49,7 +37,7 @@ TupleStream& operator>>(TupleStream &input, long int &x) {
 
     // Fetch next PyObject from stream.
     PyObject *po = PyTuple_GetItem(input.args, input.count);
-    
+
     // Type-check, then finally take the value from the PyObject, and
     // then check again. First check is necessary to prevent automatic
     // conversion from float to int.
@@ -87,3 +75,31 @@ TupleStream& operator>>(TupleStream &input, double &x) {
   input.count++;
   return input;
 }
+
+// Read an integer from tuple stream.
+TupleStream& operator>>(TupleStream &input, TupleStreamExtractable &x) {
+  try {
+    if (input.fail()) throw TupleStream::FailStateException();
+
+    if (input.eof()) throw TupleStream::ArgsCountException();
+
+    // Fetch next PyObject from stream.
+    PyObject *po = PyTuple_GetItem(input.args, input.count);
+    
+    // Take the value from the PyObject, and then check if
+    // reading/conversion was successful.
+    try {
+      x = po;
+    }
+    catch (std::exception) {
+      throw TupleStream::TypeErrorException();
+    }
+  }
+  catch (TupleStream::ArgsCountException) { input.set_fail_nargs(); }
+  catch (TupleStream::TypeErrorException) { input.set_fail_typeerror(); }
+  catch (TupleStream::FailStateException) { }
+  
+  input.count++;
+  return input;
+}
+
