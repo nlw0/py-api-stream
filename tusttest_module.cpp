@@ -55,6 +55,7 @@ static PyObject * test_function3(PyObject *self, PyObject *args) {
 
   double a;
   ArrayManager m;
+  m.set_dimensions(2);
 
   qq >> a >> m;
 

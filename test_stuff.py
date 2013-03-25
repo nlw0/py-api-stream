@@ -135,11 +135,27 @@ if __name__ == '__main__':
     print 70*'-'
     a = 3.0
     b = numpy.array([[1.0, 2.0], [3.0, 4.0]])
+    b1 = numpy.array([1.0, 2.0, 3.0, 4.0])
+    b3 = numpy.ones((3,3,3))
     print a
     print b
     z = tusttest.tfun3(a,b)
     zr = tfun3_proto(a,b)
     print z
     print zr
+
+    try:
+        z = tusttest.tfun3(a,b1)
+    except TypeError as err:
+        print 'OK, TypeError with message "' + err.message + '"'
+    else:
+        raise Exception('FAIL No exception was risen.')
+
+    try:
+        z = tusttest.tfun3(a,b3)
+    except TypeError as err:
+        print 'OK, TypeError with message "' + err.message + '"'
+    else:
+        raise Exception('FAIL No exception was risen.')
 
 
