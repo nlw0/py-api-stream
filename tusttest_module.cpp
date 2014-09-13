@@ -21,14 +21,14 @@
 #include "ArrayManager.cpp"
 
 static PyObject * test_function1(PyObject *self, PyObject *args) {
-  TupleStream qq(args);
+  TupleStream ts(args);
 
   long int a;
   long int b;
 
-  qq >> a >> b;
+  ts >> a >> b;
 
-  if (qq.fail()) return NULL;
+  if (ts.fail()) return NULL;
 
   long int z = a + b;
 
@@ -36,14 +36,14 @@ static PyObject * test_function1(PyObject *self, PyObject *args) {
 }
 
 static PyObject * test_function2(PyObject *self, PyObject *args) {
-  TupleStream qq(args);
+  TupleStream ts(args);
 
   long int a;
   double b;
 
-  qq >> a >> b;
+  ts >> a >> b;
 
-  if (qq.fail()) return NULL;
+  if (ts.fail()) return NULL;
 
   double z = a * b;
 
@@ -51,15 +51,15 @@ static PyObject * test_function2(PyObject *self, PyObject *args) {
 }
 
 static PyObject * test_function3(PyObject *self, PyObject *args) {
-  TupleStream qq(args);
+  TupleStream ts(args);
 
   double a;
   ArrayManager m;
   m.set_dimensions(2);
 
-  qq >> a >> m;
+  ts >> a >> m;
 
-  if (qq.fail()) return NULL;
+  if (ts.fail()) return NULL;
 
   double z = a * (m(0,0) * m(1,1) - m(1,0) * m(0,1));
 

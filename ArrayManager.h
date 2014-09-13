@@ -32,7 +32,7 @@ public:
   // Size of the array in each dimension. Simply points to the
   // "dimensions" from the array_obj. "size" is the name used in
   // Python.
-  npy_int* size;
+  npy_intp* size;
 
   ArrayManager();
 
@@ -54,9 +54,9 @@ public:
   // to help you access the data from numpy arrays to perform fast
   // calculations. You need to know what you are doing.
   inline double& operator()(npy_int);
-  inline double& operator()(npy_int,npy_int);
-  inline double& operator()(npy_int,npy_int,npy_int);
-  inline double& operator()(npy_int,npy_int,npy_int,npy_int);
+  inline double& operator()(npy_int, npy_int);
+  inline double& operator()(npy_int, npy_int, npy_int);
+  inline double& operator()(npy_int, npy_int, npy_int, npy_int);
 
   ArrayManager& operator=(PyObject* obj);
 
