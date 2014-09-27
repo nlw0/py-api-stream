@@ -54,7 +54,23 @@ static PyObject * test_function3(PyObject *self, PyObject *args) {
   TupleStream ts(args);
 
   double a;
-  ArrayManager m;
+  ArrayManager<double> m;
+  m.set_dimensions(2);
+
+  ts >> a >> m;
+
+  if (ts.fail()) return NULL;
+
+  double z = a * (m(0,0) * m(1,1) - m(1,0) * m(0,1));
+
+  return PyFloat_FromDouble(z);
+}
+
+static PyObject * test_function4(PyObject *self, PyObject *args) {
+  TupleStream ts(args);
+
+  double a;
+  ArrayManager<int> m;
   m.set_dimensions(2);
 
   ts >> a >> m;
@@ -73,6 +89,8 @@ static PyMethodDef TuStTestMethods[] =
     {"tfun2", test_function2, METH_VARARGS,
      "test function 2.\n"},
     {"tfun3", test_function3, METH_VARARGS,
+     "test function 3.\n"},
+    {"tfun4", test_function4, METH_VARARGS,
      "test function 3.\n"},
     {NULL, NULL, 0, NULL}
   };

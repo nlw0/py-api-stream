@@ -1,4 +1,4 @@
-/* Copyright 2013 Nicolau Leal Werneck
+/* Copyright 2013, 2014 Nicolau Leal Werneck
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,18 +16,23 @@
 #ifndef ARRAYMANAGER_H
 #define ARRAYMANAGER_H
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include "numpy/arrayobject.h"
 
 #include <stdexcept>
 
+template <class T>
 class ArrayManager : public TupleStreamExtractable {
   bool specific_dimensions;
   int ndim_min, ndim_max;
+
+  void get_pyarray_with_type(PyObject* obj);
+
 public:
   PyArrayObject *array_obj;
 
   // Pointer to the actual data array from array_obj.
-  double* data;
+  T* data;
 
   // Size of the array in each dimension. Simply points to the
   // "dimensions" from the array_obj. "size" is the name used in
@@ -42,7 +47,7 @@ public:
 
   // Square brackets simply gives access to the "data" pointer from
   // the array.
-  inline double& operator[](npy_int);
+  inline T& operator[](npy_int);
 
   // Overload the parenthesis to allow for indexing with multiple
   // dimensions. Remember square brackets can never receive multiple
@@ -53,10 +58,10 @@ public:
   // there are no bound checks whatsoever. This class is only supposed
   // to help you access the data from numpy arrays to perform fast
   // calculations. You need to know what you are doing.
-  inline double& operator()(npy_int);
-  inline double& operator()(npy_int, npy_int);
-  inline double& operator()(npy_int, npy_int, npy_int);
-  inline double& operator()(npy_int, npy_int, npy_int, npy_int);
+  inline T& operator()(npy_int);
+  inline T& operator()(npy_int, npy_int);
+  inline T& operator()(npy_int, npy_int, npy_int);
+  inline T& operator()(npy_int, npy_int, npy_int, npy_int);
 
   ArrayManager& operator=(PyObject* obj);
 

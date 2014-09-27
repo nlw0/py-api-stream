@@ -72,7 +72,7 @@ TupleStream& operator>>(TupleStream &input, long int &x) {
   return input;
 }
 
-// Read an integer from tuple stream.
+// Read a double from tuple stream.
 TupleStream& operator>>(TupleStream &input, double &x) {
   try {
     if (input.fail()) throw TupleStream::FailStateException();
@@ -98,7 +98,7 @@ TupleStream& operator>>(TupleStream &input, double &x) {
   return input;
 }
 
-// Read an integer from tuple stream.
+// Read a generic "tuple extractable" object from tuple stream.
 TupleStream& operator>>(TupleStream &input, TupleStreamExtractable &x) {
   try {
     if (input.fail()) throw TupleStream::FailStateException();
@@ -107,7 +107,7 @@ TupleStream& operator>>(TupleStream &input, TupleStreamExtractable &x) {
 
     // Fetch next PyObject from stream.
     PyObject *po = PyTuple_GetItem(input.args, input.count);
-    
+
     // Take the value from the PyObject, and then check if
     // reading/conversion was successful.
     try {

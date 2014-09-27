@@ -47,16 +47,10 @@ public:
   void set_fail_nargs();
   void set_fail_typeerror();
   bool eof();
-
 };
 
-// Read an integer from tuple stream.
 TupleStream& operator>>(TupleStream &, long int &);
-
-// Read an integer from tuple stream.
 TupleStream& operator>>(TupleStream &, double &);
-
-// Read an integer from tuple stream.
 TupleStream& operator>>(TupleStream &, TupleStreamExtractable &);
 
 #endif /* PYTUPLESTREAM_H */
