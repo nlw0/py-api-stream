@@ -1,4 +1,4 @@
-/* Copyright 2013 Nicolau Leal Werneck
+/* Copyright 2013-2018 Nicolau Leal Werneck
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -60,8 +60,8 @@ TupleStream& operator>>(TupleStream &input, long int &x) {
     // Type-check, then finally take the value from the PyObject, and
     // then check again. First check is necessary to prevent automatic
     // conversion from float to int.
-    if (!PyInt_CheckExact(po)) throw TupleStream::TypeErrorException();
-    x = PyInt_AsLong(po);    
+    if (!PyLong_CheckExact(po)) throw TupleStream::TypeErrorException();
+    x = PyLong_AsLong(po);
     if ((x == -1) && PyErr_Occurred()) throw TupleStream::TypeErrorException();
   }
   catch (TupleStream::ArgsCountException) { input.set_fail_nargs(); }
@@ -101,6 +101,7 @@ TupleStream& operator>>(TupleStream &input, double &x) {
 // Read a generic "tuple extractable" object from tuple stream.
 TupleStream& operator>>(TupleStream &input, TupleStreamExtractable &x) {
   try {
+
     if (input.fail()) throw TupleStream::FailStateException();
 
     if (input.eof()) throw TupleStream::ArgsCountException();

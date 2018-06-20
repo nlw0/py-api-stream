@@ -1,4 +1,4 @@
-## Copyright 2013, 2014 Nicolau Leal Werneck
+## Copyright 2013-2018 Nicolau Leal Werneck
 ##
 ##    Licensed under the Apache License, Version 2.0 (the "License");
 ##    you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
 ##    limitations under the License.
 
 from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext
 
-## Remove -Wstrict-prototypes from compiler args.
-## http://stackoverflow.com/questions/8106258/cc1plus-warning-command-line-option-wstrict-prototypes-is-valid-for-ada-c-o
-import os
-from distutils.sysconfig import get_config_vars
-(opt,) = get_config_vars('OPT')
-os.environ['OPT'] = " ".join(
-    flag for flag in opt.split() if flag != '-Wstrict-prototypes'
-)
+
+# https://stackoverflow.com/a/49041815/160466
+# Avoid a gcc warning below:
+# cc1plus: warning: command line option ‘-Wstrict-prototypes’ is valid for C/ObjC but not for C++
+class BuildExt(build_ext):
+    def build_extensions(self):
+        self.compiler.compiler_so.remove('-Wstrict-prototypes')
+        super(BuildExt, self).build_extensions()
+
 
 module1 = Extension(
     'tusttest',
@@ -36,5 +38,6 @@ setup(
     name='TuStTest',
     version='1.0',
     description='Test TupleStream class',
-    ext_modules=[module1]
+    ext_modules=[module1],
+    cmdclass={'build_ext': BuildExt},
 )

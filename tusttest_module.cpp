@@ -1,4 +1,4 @@
-/* Copyright 2013 Nicolau Leal Werneck
+/* Copyright 2013-2018 Nicolau Leal Werneck
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  */
 
 #include <Python.h>
+#include <iostream>
 #include "PyTupleStream.h"
 #include "ArrayManager.h"
 
@@ -32,7 +33,7 @@ static PyObject * test_function1(PyObject *self, PyObject *args) {
 
   long int z = a + b;
 
-  return PyInt_FromLong(z);
+  return PyLong_FromLong(z);
 }
 
 static PyObject * test_function2(PyObject *self, PyObject *args) {
@@ -62,7 +63,7 @@ static PyObject * test_function3(PyObject *self, PyObject *args) {
   if (ts.fail()) return NULL;
 
   double z = a * (m(0,0) * m(1,1) - m(1,0) * m(0,1));
-
+    std::cout << z<<std::endl;
   return PyFloat_FromDouble(z);
 }
 
@@ -95,9 +96,19 @@ static PyMethodDef TuStTestMethods[] =
     {NULL, NULL, 0, NULL}
   };
 
-PyMODINIT_FUNC
 
-inittusttest(void) {
-  (void) Py_InitModule("tusttest", TuStTestMethods);
-  import_array();
+static struct PyModuleDef tustmodule = {
+    PyModuleDef_HEAD_INIT,
+    "tusttest",   /* name of module */
+    NULL, /* module documentation, may be NULL */
+    -1,       /* size of per-interpreter state of the module,
+                 or -1 if the module keeps state in global variables. */
+    TuStTestMethods
+};
+
+PyMODINIT_FUNC
+PyInit_tusttest(void) {
+    return PyModule_Create(&tustmodule);
+//  (void) Py_Initialize("tusttest", TuStTestMethods);
+//  import_array();
 }
