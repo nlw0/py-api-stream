@@ -92,7 +92,7 @@ static PyMethodDef TuStTestMethods[] =
     {"tfun3", test_function3, METH_VARARGS,
      "test function 3.\n"},
     {"tfun4", test_function4, METH_VARARGS,
-     "test function 3.\n"},
+     "test function 4.\n"},
     {NULL, NULL, 0, NULL}
   };
 
@@ -108,7 +108,7 @@ static struct PyModuleDef tustmodule = {
 
 PyMODINIT_FUNC
 PyInit_tusttest(void) {
-    return PyModule_Create(&tustmodule);
-//  (void) Py_Initialize("tusttest", TuStTestMethods);
-//  import_array();
+  PyObject*module = PyModule_Create(&tustmodule);
+  import_array();
+  return module;
 }

@@ -89,18 +89,6 @@ void ArrayManager<T>::get_pyarray_with_type(PyObject* obj) {
 
 template <>
 void ArrayManager<double>::get_pyarray_with_type(PyObject* obj) {
-    std::cout << "oi" << std::endl;
-
-PyArrayObject *arr = NULL;
-PyArray_Descr *dtype = NULL;
-int ndim = 0;
-npy_intp dims[32];
-
-  PyArray_GetArrayParamsFromObject(obj, NULL, 1, &dtype, &ndim, dims, &arr, NULL);
-
-    std::cout << "oi" << dtype<<ndim<<dims[0] << std::endl;
-
-
   array_obj = (PyArrayObject*) PyArray_FROM_OTF(obj, NPY_DOUBLE, NPY_ARRAY_INOUT_ARRAY);
   if (array_obj == NULL) throw std::exception();
 }

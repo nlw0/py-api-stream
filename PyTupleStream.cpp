@@ -90,9 +90,7 @@ TupleStream& operator>>(TupleStream &input, double &x) {
   catch (TupleStream::ArgsCountException) { input.set_fail_nargs(); }
   catch (TupleStream::TypeErrorException) { input.set_fail_typeerror(); }
   catch (TupleStream::FailStateException) { }
-  catch (std::exception e) { 
-    
-  }
+  catch (std::exception e) { }
   
   input.count++;
   return input;
