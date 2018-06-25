@@ -42,12 +42,12 @@ inline T& ArrayManager<T>::operator()(npy_int x2, npy_int x1) { return data[x2 *
 
 template <class T>
 inline T& ArrayManager<T>::operator()(npy_int x3, npy_int x2, npy_int x1) {
-  return data[((x3 * size[2]) + x2) * size[1] + x1]; }
+  return data[((x3 * size[1]) + x2) * size[2] + x1]; }
 
 
 template <class T>
 inline T& ArrayManager<T>::operator()(npy_int x4, npy_int x3, npy_int x2, npy_int x1) {
-  return data[(((x4 * size[3] + x3) * size[2]) + x2) * size[1] + x1]; }
+  return data[(((x4 * size[1] + x3) * size[2]) + x2) * size[3] + x1]; }
 
 
 template <class T>
